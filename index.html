@@ -1,1 +1,557 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>URBN.MEN — Moda Masculina</title>
 
+  <style>
+    /* ===== RESET E BASE ===== */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      color: #111;
+    }
+
+    /* ===== CABEÇALHO ===== */
+    header {
+      background: #111;
+      color: white;
+      padding: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 3px;
+    }
+
+    .logo span {
+      color: #c9a84c;
+    }
+
+    .header-sub {
+      font-size: 12px;
+      color: #888;
+      margin-top: 4px;
+      letter-spacing: 1px;
+    }
+
+    .wpp-topo {
+      background: #25d366;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    /* ===== FILTROS ===== */
+    .filtros {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #eee;
+    }
+
+    .filtros button {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 20px;
+      padding: 6px 16px;
+      font-size: 13px;
+      cursor: pointer;
+      color: #555;
+    }
+
+    .filtros button.ativo {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    /* ===== GRADE DE PRODUTOS ===== */
+    .grade {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 16px;
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* ===== CARD DO PRODUTO ===== */
+    .card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid #e5e5e5;
+      cursor: pointer;
+      transition: transform 0.15s;
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+    }
+
+    .card-foto {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 56px;
+      position: relative;
+      background: #f9f9f9;
+    }
+
+    .badge-novo {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      background: #c9a84c;
+      color: #111;
+      font-size: 10px;
+      border-radius: 4px;
+      padding: 2px 8px;
+      font-weight: bold;
+    }
+
+    .badge-esgotado {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      font-size: 10px;
+      border-radius: 4px;
+      padding: 2px 8px;
+    }
+
+    .card-info {
+      padding: 12px;
+    }
+
+    .card-nome {
+      font-size: 15px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .card-categoria {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+
+    .card-preco {
+      font-size: 18px;
+      font-weight: bold;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    .tamanhos {
+      display: flex;
+      gap: 4px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+
+    .tamanho {
+      font-size: 11px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      padding: 2px 7px;
+      color: #555;
+    }
+
+    .tamanho.esgotado {
+      text-decoration: line-through;
+      opacity: 0.35;
+    }
+
+    .btn-pedir {
+      width: 100%;
+      background: #25d366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 8px;
+      font-size: 13px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-pedir.desabilitado {
+      background: #ccc;
+      color: #888;
+      cursor: not-allowed;
+    }
+
+    /* ===== MODAL (janela de detalhes) ===== */
+    .modal-fundo {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.55);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-fundo.aberto {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 360px;
+      overflow: hidden;
+    }
+
+    .modal-foto {
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 72px;
+      background: #f5f5f5;
+    }
+
+    .modal-corpo {
+      padding: 20px;
+    }
+
+    .modal-nome {
+      font-size: 20px;
+      font-weight: bold;
+      margin-bottom: 4px;
+    }
+
+    .modal-categoria {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .modal-preco {
+      font-size: 24px;
+      font-weight: bold;
+      margin-bottom: 16px;
+    }
+
+    .modal-label {
+      font-size: 13px;
+      color: #555;
+      margin-bottom: 8px;
+    }
+
+    .modal-tamanhos {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+
+    .modal-tamanho {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 6px 14px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .modal-tamanho.selecionado {
+      background: #111;
+      color: white;
+      border-color: #111;
+    }
+
+    .modal-tamanho.esgotado {
+      opacity: 0.3;
+      text-decoration: line-through;
+      cursor: not-allowed;
+    }
+
+    .btn-wpp {
+      width: 100%;
+      background: #25d366;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 8px;
+    }
+
+    .btn-fechar {
+      width: 100%;
+      background: white;
+      color: #555;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- CABEÇALHO -->
+  <header>
+    <div>
+      <div class="logo">URBN<span>.</span>MEN</div>
+      <div class="header-sub">Moda masculina</div>
+    </div>
+    <a class="wpp-topo" href="https://wa.me/5511999999999" target="_blank">
+      Fale conosco
+    </a>
+  </header>
+
+  <!-- FILTROS -->
+  <div class="filtros">
+    <button class="ativo" onclick="filtrar('todos', this)">Todos</button>
+    <button onclick="filtrar('camiseta', this)">Camisetas</button>
+    <button onclick="filtrar('calca', this)">Calças</button>
+    <button onclick="filtrar('moletom', this)">Moletons</button>
+    <button onclick="filtrar('shorts', this)">Shorts</button>
+  </div>
+
+  <!-- GRADE DE PRODUTOS -->
+  <div class="grade" id="grade"></div>
+
+  <!-- MODAL DE DETALHES -->
+  <div class="modal-fundo" id="modal" onclick="fecharModal(event)">
+    <div class="modal">
+      <div class="modal-foto" id="modal-foto"></div>
+      <div class="modal-corpo">
+        <div class="modal-nome" id="modal-nome"></div>
+        <div class="modal-categoria" id="modal-categoria"></div>
+        <div class="modal-preco" id="modal-preco"></div>
+        <div class="modal-label">Selecione o tamanho:</div>
+        <div class="modal-tamanhos" id="modal-tamanhos"></div>
+        <button class="btn-wpp" onclick="pedirNoWhatsapp()">Pedir pelo WhatsApp</button>
+        <button class="btn-fechar" onclick="document.getElementById('modal').classList.remove('aberto')">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ===== LISTA DE PRODUTOS =====
+    // Para adicionar um produto novo, copie um bloco { } e preencha os dados
+    const produtos = [
+      {
+        id: 1,
+        nome: "Camiseta Oversized",
+        categoria: "camiseta",
+        emoji: "👕",
+        preco: 79.90,
+        novo: true,
+        tamanhos: ["P", "M", "G", "GG"],
+        esgotados: [],       // coloque aqui os tamanhos esgotados, ex: ["P", "GG"]
+        emEstoque: true
+      },
+      {
+        id: 2,
+        nome: "Calça Cargo",
+        categoria: "calca",
+        emoji: "👖",
+        preco: 189.90,
+        novo: false,
+        tamanhos: ["38", "40", "42", "44"],
+        esgotados: ["38"],
+        emEstoque: true
+      },
+      {
+        id: 3,
+        nome: "Moletom Classic",
+        categoria: "moletom",
+        emoji: "🧥",
+        preco: 249.90,
+        novo: true,
+        tamanhos: ["P", "M", "G", "GG"],
+        esgotados: [],
+        emEstoque: true
+      },
+      {
+        id: 4,
+        nome: "Shorts Tactel",
+        categoria: "shorts",
+        emoji: "🩳",
+        preco: 69.90,
+        novo: false,
+        tamanhos: ["P", "M", "G"],
+        esgotados: ["P", "M", "G"],
+        emEstoque: false    // false = produto totalmente esgotado
+      },
+      {
+        id: 5,
+        nome: "Camiseta Polo",
+        categoria: "camiseta",
+        emoji: "👔",
+        preco: 99.90,
+        novo: false,
+        tamanhos: ["P", "M", "G", "GG"],
+        esgotados: ["GG"],
+        emEstoque: true
+      },
+      {
+        id: 6,
+        nome: "Calça Slim",
+        categoria: "calca",
+        emoji: "👖",
+        preco: 169.90,
+        novo: true,
+        tamanhos: ["38", "40", "42", "44", "46"],
+        esgotados: [],
+        emEstoque: true
+      }
+    ];
+
+    // ===== NÚMERO DO WHATSAPP =====
+    // Troque pelo número real (com código do país, sem espaços ou traços)
+    const NUMERO_WHATSAPP = "5511999999999";
+
+    // ===== VARIÁVEIS INTERNAS =====
+    let produtoAtual = null;
+    let tamanhoEscolhido = null;
+
+    // ===== FUNÇÃO: DESENHAR OS CARDS NA TELA =====
+    function mostrarProdutos(lista) {
+      const grade = document.getElementById("grade");
+      grade.innerHTML = ""; // limpa a grade antes de desenhar
+
+      lista.forEach(function(p) {
+        // Cria o HTML dos tamanhos do card
+        const tamanhoHTML = p.tamanhos.map(function(t) {
+          const esgotado = p.esgotados.includes(t) ? " esgotado" : "";
+          return '<span class="tamanho' + esgotado + '">' + t + '</span>';
+        }).join("");
+
+        // Cria o card completo
+        const card = document.createElement("div");
+        card.className = "card";
+        card.onclick = function() { abrirModal(p); };
+
+        card.innerHTML = `
+          <div class="card-foto">
+            ${p.novo ? '<span class="badge-novo">Novo</span>' : ""}
+            ${!p.emEstoque ? '<span class="badge-esgotado">Esgotado</span>' : ""}
+            <span>${p.emoji}</span>
+          </div>
+          <div class="card-info">
+            <div class="card-nome">${p.nome}</div>
+            <div class="card-categoria">${p.categoria}</div>
+            <div class="card-preco">R$ ${p.preco.toFixed(2).replace(".", ",")}</div>
+            <div class="tamanhos">${tamanhoHTML}</div>
+            <button class="btn-pedir ${!p.emEstoque ? "desabilitado" : ""}"
+              onclick="event.stopPropagation(); ${p.emEstoque ? "abrirModal(produtos[" + produtos.indexOf(p) + "])" : ""}">
+              ${p.emEstoque ? "Pedir agora" : "Indisponível"}
+            </button>
+          </div>
+        `;
+
+        grade.appendChild(card);
+      });
+    }
+
+    // ===== FUNÇÃO: FILTRAR POR CATEGORIA =====
+    function filtrar(categoria, botao) {
+      // Deixa só o botão clicado como "ativo"
+      document.querySelectorAll(".filtros button").forEach(function(b) {
+        b.classList.remove("ativo");
+      });
+      botao.classList.add("ativo");
+
+      // Filtra ou mostra todos
+      if (categoria === "todos") {
+        mostrarProdutos(produtos);
+      } else {
+        const filtrados = produtos.filter(function(p) {
+          return p.categoria === categoria;
+        });
+        mostrarProdutos(filtrados);
+      }
+    }
+
+    // ===== FUNÇÃO: ABRIR MODAL DE DETALHES =====
+    function abrirModal(p) {
+      produtoAtual = p;
+      tamanhoEscolhido = null;
+
+      document.getElementById("modal-foto").textContent = p.emoji;
+      document.getElementById("modal-nome").textContent = p.nome;
+      document.getElementById("modal-categoria").textContent = p.categoria;
+      document.getElementById("modal-preco").textContent = "R$ " + p.preco.toFixed(2).replace(".", ",");
+
+      // Desenha os tamanhos clicáveis
+      const divTamanhos = document.getElementById("modal-tamanhos");
+      divTamanhos.innerHTML = "";
+      p.tamanhos.forEach(function(t) {
+        const span = document.createElement("div");
+        span.className = "modal-tamanho" + (p.esgotados.includes(t) ? " esgotado" : "");
+        span.textContent = t;
+        if (!p.esgotados.includes(t)) {
+          span.onclick = function() {
+            document.querySelectorAll(".modal-tamanho").forEach(function(el) {
+              el.classList.remove("selecionado");
+            });
+            span.classList.add("selecionado");
+            tamanhoEscolhido = t;
+          };
+        }
+        divTamanhos.appendChild(span);
+      });
+
+      document.getElementById("modal").classList.add("aberto");
+    }
+
+    // ===== FUNÇÃO: FECHAR MODAL AO CLICAR FORA =====
+    function fecharModal(evento) {
+      if (evento.target.id === "modal") {
+        document.getElementById("modal").classList.remove("aberto");
+      }
+    }
+
+    // ===== FUNÇÃO: ENVIAR PEDIDO PELO WHATSAPP =====
+    function pedirNoWhatsapp() {
+      if (!tamanhoEscolhido) {
+        alert("Por favor, selecione um tamanho antes de pedir!");
+        return;
+      }
+      const p = produtoAtual;
+      const mensagem = encodeURIComponent(
+        "Olá! Gostaria de fazer um pedido:\n\n" +
+        "Produto: " + p.nome + "\n" +
+        "Tamanho: " + tamanhoEscolhido + "\n" +
+        "Preço: R$ " + p.preco.toFixed(2).replace(".", ",") + "\n\n" +
+        "Aguardo confirmação!"
+      );
+      window.open("https://wa.me/" + NUMERO_WHATSAPP + "?text=" + mensagem, "_blank");
+    }
+
+    // ===== INICIAR: mostra todos os produtos ao abrir a página =====
+    mostrarProdutos(produtos);
+  </script>
+
+</body>
+</html>
